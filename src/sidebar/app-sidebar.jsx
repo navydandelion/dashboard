@@ -25,13 +25,13 @@ import {
 const menuItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Analytics", url: "/analytics", icon: BarChart },
-  { title: "Appointments", url: "/appointments", icon: Calendar },
-  { title: "Surgery", url: "/surgery", icon: Stethoscope },
-  { title: "Reception", url: "/reception", icon: Bell },
+  { title: "Appointments", url: "../pages/Appointments", icon: Calendar },
+  { title: "Surgery", url: "/Surgery", icon: Stethoscope },
+  { title: "Reception", url: "/Reception", icon: Bell },
 ];
 
 const menuItemsTwo = [
-  { title: "Settings", url: "/settings", icon: Settings2 },
+  { title: "Settings", url: "./Settings", icon: Settings2 },
   { title: "Log out", url: "/logout", icon: LogOut },
 ];
 
