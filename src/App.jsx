@@ -11,15 +11,16 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Dashboard />} />{" "}
-        <Route path="Dashboard" element={<Dashboard />} />
-        <Route path="Analytics" element={<Analytics />} />
-        <Route path="Appointments" element={<Appointments />} />
-        <Route path="Surgery" element={<Surgery />} />
-        <Route path="Reception" element={<Reception />} />
-        <Route path="Settings" element={<Settings />} />
-        <Route path="Logout" element={<h1>Logging Out...</h1>} />
+        <Route index element={<Dashboard />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/Analytics" element={<Analytics />} />
+        <Route path="/Appointments" element={<Appointments />} />
+        <Route path="/Surgery" element={<Surgery />} />
+        <Route path="/Reception" element={<Reception />} />
+        <Route path="/Settings" element={<Settings />} />
+        <Route path="logout" element={<h1>Logging Out...</h1>} />
       </Route>
+      <Route path="*" element={<h1>Page Not Found</h1>} />
     </Routes>
   );
 }
