@@ -1,154 +1,124 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
-import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { Input } from "@/components/ui/input";
+import React, { useState, useEffect } from "react";
 import {
   Table,
-  TableBody,
-  TableCell,
-  TableHead,
   TableHeader,
   TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-const API_URL = "https://5d3f-89-236-218-41.ngrok-free.app/api/formData_get";
-
-export default function Appointments() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+const Appointments = () => {
+  const [formData, setFormData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [apiUrl, setApiUrl] = useState(
+    "https://10e8-89-236-218-41.ngrok-free.app/api/formData_get"
+  );
+  const [searchTerm, setSearchTerm] = useState("");
+
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch(API_URL, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
-
-        console.log("Response status:", response.status);
-
-        const contentType = response.headers.get("content-type");
-        console.log("Content-Type:", contentType);
-
-        // Читаем ответ как текст, чтобы увидеть, что сервер реально возвращает
-        const text = await response.text();
-        console.log("Raw response:", text);
-
-        if (!response.ok) {
-          throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
-        }
-
-        if (!contentType || !contentType.includes("application/json")) {
-          throw new Error("Invalid response type — expected JSON");
-        }
-
-        // Парсим JSON из текста
-        const result = JSON.parse(text);
-        setData(result);
-      } catch (error) {
-        console.error("Ошибка запроса:", error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchData();
   }, []);
 
-  const columns = [
-    { accessorKey: "id", header: "ID" },
-    { accessorKey: "department", header: "Department" },
-    { accessorKey: "doctor", header: "Doctor" },
-    { accessorKey: "name", header: "Name" },
-    { accessorKey: "phone", header: "Phone Number" },
-    { accessorKey: "date", header: "Date" },
-    { accessorKey: "time", header: "Time" },
-    { accessorKey: "request", header: "Special Request" },
-  ];
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
 
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-  });
+    try {
+      const response = await fetch(`${apiUrl}?t=${Date.now()}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "ngrok-skip-browser-warning": "true",
+          "Cache-Control": "no-cache",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error! Status: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      setFormData(Array.isArray(data) ? data : data.data || []);
+    } catch (error) {
+      setError(error.message);
+      setFormData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter formData based on the search term
+  const filteredData = formData.filter((item) =>
+    Object.values(item).some((value) =>
+      value?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
 
   return (
-    <div className="w-full">
-      {error && <div className="text-red-500">Ошибка: {error}</div>}
-      {loading && <div className="text-center">Загрузка...</div>}
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Appointment Records</h1>
 
-      <div className="flex items-center py-4">
+      {/* Search Input */}
+      <div className="mb-4">
         <Input
-          placeholder="Поиск по имени..."
-          value={table.getColumn("name")?.getFilterValue() || ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search appointments..."
+          className="w-full"
         />
       </div>
 
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell ??
-                          cell.column.columnDef.accessorKey,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
+      {loading && <p className="text-center my-4">Loading appointments...</p>}
+      {error && <p className="text-red-500">Error: {error}</p>}
+
+      {!loading && !error && filteredData.length === 0 && (
+        <p className="text-center my-4">No appointments found.</p>
+      )}
+
+      {!loading && !error && filteredData.length > 0 && (
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  Нет данных.
-                </TableCell>
+                <TableHead>ID</TableHead>
+                <TableHead>Department</TableHead>
+                <TableHead>Doctor</TableHead>
+                <TableHead>Patient Name</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Time</TableHead>
+                <TableHead>Special Request</TableHead>
+                <TableHead>Created At</TableHead>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {filteredData.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.id}</TableCell>
+                  <TableCell>{item.department}</TableCell>
+                  <TableCell>{item.doctor}</TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.phone}</TableCell>
+                  <TableCell>{item.date}</TableCell>
+                  <TableCell>{item.time}</TableCell>
+                  <TableCell>{item.request || "-"}</TableCell>
+                  <TableCell>
+                    {new Date(item.created_at).toLocaleString()}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default Appointments;
