@@ -8,6 +8,7 @@ import Surgery from "./pages/Surgery";
 import Appointments from "./pages/Appointments";
 import { useState, useEffect } from "react";
 import { ThemeProvider } from "./components/ui/context/theme";
+import Login from "./pages/login";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -22,7 +23,7 @@ function App() {
       <Routes>
         <Route
           path="/login"
-          element={isAuthenticated ? <Navigate to="/Dashboard" /> : <Surgery />}
+          element={isAuthenticated ? <Navigate to="/Dashboard" /> : <Login />}
         />
 
         {isAuthenticated ? (
