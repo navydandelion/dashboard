@@ -84,6 +84,19 @@
   }
 }
 
+
+/* Default (Light Mode) */
+body {
+  @apply bg-white text-black transition-colors duration-300;
+}
+
+/* Dark Mode */
+.dark body {
+  @apply bg-gray-900 text-white;
+}
+
+
+
 /* 
 @layer base {
   * {

@@ -1,16 +1,19 @@
-// // @type {import('tailwindcss').Config}
-// module.exports = {
-//   purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
-//   darkMode: false,
-//   theme: {
-//     extend: {},
-//   },
-//   variants: {
-//     extend: {},
-//   },
-//   plugins: [],
-
-// };
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
+  darkMode: "class",
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./public/index.html",
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./app/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
 
 module.exports = {
   darkMode: ["class"],

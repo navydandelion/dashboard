@@ -7,6 +7,7 @@ import Settings from "./pages/Settings";
 import Surgery from "./pages/Surgery";
 import Appointments from "./pages/Appointments";
 import { useState, useEffect } from "react";
+import { ThemeProvider } from "./components/ui/context/theme";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,32 +18,34 @@ function App() {
   }, []);
 
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={isAuthenticated ? <Navigate to="/Dashboard" /> : <Surgery />}
-      />
+    <ThemeProvider>
+      <Routes>
+        <Route
+          path="/login"
+          element={isAuthenticated ? <Navigate to="/Dashboard" /> : <Surgery />}
+        />
 
-      {isAuthenticated ? (
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="/Dashboard" element={<Dashboard />} />
-          <Route path="/Analytics" element={<Analytics />} />
-          <Route path="/Appointments" element={<Appointments />} />
-          <Route path="/Surgery" element={<Surgery />} />
-          <Route path="/Reception" element={<Reception />} />
-          <Route path="/Settings" element={<Settings />} />
-          <Route
-            path="/logout"
-            element={<Logout setIsAuthenticated={setIsAuthenticated} />}
-          />
-        </Route>
-      ) : (
-        <Route path="*" element={<Navigate to="/login" />} />
-      )}
+        {isAuthenticated ? (
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="/Dashboard" element={<Dashboard />} />
+            <Route path="/Analytics" element={<Analytics />} />
+            <Route path="/Appointments" element={<Appointments />} />
+            <Route path="/Surgery" element={<Surgery />} />
+            <Route path="/Reception" element={<Reception />} />
+            <Route path="/Settings" element={<Settings />} />
+            <Route
+              path="/logout"
+              element={<Logout setIsAuthenticated={setIsAuthenticated} />}
+            />
+          </Route>
+        ) : (
+          <Route path="*" element={<Navigate to="/login" />} />
+        )}
 
-      <Route path="*" element={<h1>Page Not Found</h1>} />
-    </Routes>
+        <Route path="*" element={<h1>Page Not Found</h1>} />
+      </Routes>
+    </ThemeProvider>
   );
 }
 
