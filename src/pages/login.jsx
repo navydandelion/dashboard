@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
-function Surgery() {
+function Login() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -23,19 +23,35 @@ function Surgery() {
     }
   }, [navigate]);
 
+  const getCsrfToken = async () => {
+    try {
+      const response = await fetch(
+        "https://d322-188-113-211-123.ngrok-free.app/api/csrf"
+      );
+      const data = await response.json();
+      return data.csrfToken;
+    } catch (error) {
+      console.error("Error fetching CSRF token:", error);
+      return null;
+    }
+  };
+
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
+      const csrfToken = await getCsrfToken();
       const response = await fetch(
-        "https://d322-188-113-211-123.ngrok-free.app/api/login",
+        "https://d322-188-113-211-123.ngrok-free.app/api/signup",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            ...(csrfToken && { "X-CSRF-Token": csrfToken }),
           },
           body: JSON.stringify({ name, email, password }),
         }
       );
+
       if (response.ok) {
         setIsSignUp(false);
       } else {
@@ -46,33 +62,36 @@ function Surgery() {
     }
   };
 
+  // Handle Login
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `https://d322-188-113-211-123.ngrok-free.app/api/signUp/users?name=${name}`
-      );
-      if (!response.ok) {
-        throw new Error("Ошибка загрузки данных");
-      }
-      const users = await response.json();
-      const user = users.find(
-        (user) => user.username === username && user.password === password
+        "https://d322-188-113-211-123.ngrok-free.app/api/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, password }),
+        }
       );
 
-      if (user) {
-        if (rememberMe) {
-          localStorage.setItem("rememberMe", "true");
-          localStorage.setItem("loggedInUser", username);
-        } else {
-          localStorage.setItem("rememberMe", "false");
-          localStorage.removeItem("loggedInUser");
-        }
-        navigate("/dashboard");
-      } else {
-        alert("Неверный логин или пароль");
+      if (!response.ok) {
+        throw new Error("Ошибка входа: неверные учетные данные");
       }
+
+      const data = await response.json();
+
+      if (rememberMe) {
+        localStorage.setItem("rememberMe", "true");
+        localStorage.setItem("loggedInUser", name);
+      } else {
+        localStorage.setItem("rememberMe", "false");
+        localStorage.removeItem("loggedInUser");
+      }
+
+      navigate("/dashboard");
     } catch (error) {
+      alert(error.message);
       console.error("Ошибка входа:", error);
     }
   };
@@ -120,7 +139,7 @@ function Surgery() {
             <div className="flex items-center">
               <Checkbox
                 checked={rememberMe}
-                onCheckedChange={(e) => setRememberMe(e.target.checked)}
+                onCheckedChange={(checked) => setRememberMe(checked)}
               />
               <Label className="ml-2 text-lg font-medium">Remember me</Label>
             </div>
@@ -141,4 +160,4 @@ function Surgery() {
   );
 }
 
-export default Surgery;
+export default Login;

@@ -53,7 +53,6 @@ const Appointments = () => {
     }
   };
 
-  // Filter formData based on the search term
   const filteredData = formData.filter((item) =>
     Object.values(item).some((value) =>
       value?.toString().toLowerCase().includes(searchTerm.toLowerCase())
@@ -64,7 +63,6 @@ const Appointments = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Appointment Records</h1>
 
-      {/* Search Input */}
       <div className="mb-4">
         <Input
           value={searchTerm}
