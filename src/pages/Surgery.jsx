@@ -15,7 +15,7 @@ const Surgery = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [apiUrl, setApiUrl] = useState(
-    "https://10e8-89-236-218-41.ngrok-free.app/api/formData_get"
+    "http://18.195.85.76/api/formDepartments"
   );
   const [searchTerm, setSearchTerm] = useState("");
 

@@ -14,9 +14,7 @@ const Appointments = () => {
   const [formData, setFormData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [apiUrl, setApiUrl] = useState(
-    "https://10e8-89-236-218-41.ngrok-free.app/api/formData_get"
-  );
+  const [apiUrl, setApiUrl] = useState("http://18.195.85.76/api/formData_get");
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {

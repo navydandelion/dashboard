@@ -30,10 +30,7 @@ const menuItems = [
   { title: "Reception", url: "/Reception", icon: Bell },
 ];
 
-const menuItemsTwo = [
-  { title: "Settings", url: "/Settings", icon: Settings2 },
-  { title: "Log out", url: "/logout", icon: LogOut },
-];
+const menuItemsTwo = [{ title: "Settings", url: "/Settings", icon: Settings2 }];
 
 export function AppSidebar() {
   return (
