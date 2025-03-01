@@ -1,5 +1,5 @@
 import { useTheme } from "./context/theme";
-import { Button } from "./Button"; // Import your existing Button component
+import { Button } from "./button";
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
